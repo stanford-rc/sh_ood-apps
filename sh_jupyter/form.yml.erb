@@ -1,0 +1,89 @@
+<%-
+  cmd = "sinfo -ho %R"
+  begin
+    output, status = Open3.capture2e(cmd)
+    if status.success?
+      partitions = output.split("\n").map(&:strip).reject(&:blank?).sort
+    else
+      raise output
+    end
+  rescue => e
+    partitions = []
+    error = e.message.strip
+  end
+-%>
+---
+cluster: "sherlock"
+
+form:
+  - sh_python_version
+  - extra_jupyter_args
+  - modules
+  - sh_partition
+  - sh_num_cpus
+  - sh_num_gpus
+  - sh_num_nodes
+  - bc_num_hours
+  - bc_email_on_started
+
+attributes:
+
+  modules:
+    help: | 
+        <small>Space separated list of additional environment modules to load (eg. `py-scipystack`).</br/> 
+        Full list at https://www.sherlock.stanford.edu/docs/software/list </small>
+
+  sh_python_version:
+    label: "Python version"
+    widget: select
+    options:
+      - [ "Python 2.7", "py27" ]
+      - [ "Python 3.6", "py36" ]
+    value: "py27"
+
+  sh_partition:
+    label: "Partition"
+    value: "dev"
+    help: |
+      <small>Partition to submit the job to.</small>
+    <%- if error -%>
+
+      <span class="text-danger">Error when parsing partitions:</span>
+
+      ```
+      <%= error.gsub("\n", "\n      ") %>
+      ```
+    <%- end -%>
+  <%- if partitions.blank? -%>
+    widget: text_field
+  <%- else -%>
+    widget: select
+    options:
+    <%- partitions.each do |q| -%>
+      - [ "<%= q %>", "<%= q %>" ]
+    <%- end -%>
+  <%- end -%>
+
+  sh_num_cpus:
+    label: "Number of CPUs"
+    widget: "number_field"
+    help: "<small>Number of CPU-cores to use on each node</small>"
+    min: 1
+    value: "1"
+
+  sh_num_gpus:
+    label: "Number of GPUs"
+    widget: "number_field"
+    help: "<small>Number of GPUs to use on each node</small>"
+    min: 1
+    max: 8
+    value: ""
+
+  sh_num_nodes:
+    label: "Number of nodes"
+    widget: "number_field"
+    value: "1"
+    help: "<small>Number of compute nodes to request, only useful for network-aware parallel frameworks such as MPI.</small>"
+
+  bc_num_hours:
+    label: "Runtime (in hours)"
