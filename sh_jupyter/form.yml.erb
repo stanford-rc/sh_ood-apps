@@ -72,9 +72,9 @@ attributes:
     value: "1"
 
   sh_num_gpus:
-    label: "Number of GPUs"
+    label: "Number of GPUs (optional)"
     widget: "number_field"
-    help: "<small>Number of GPUs to use on each node</small>"
+    help: "<small>Number of GPUs to use on each node. <br/>When requesting GPUs, don't forget to load the `cuda` module in the `Modules` field above.</small>"
     min: 1
     max: 8
     value: ""
