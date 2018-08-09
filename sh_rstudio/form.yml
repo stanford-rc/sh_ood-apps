@@ -1,0 +1,31 @@
+---
+cluster: "sherlock"
+
+attributes:
+  modules: "rstudio"
+
+form:
+  - modules
+  - sh_partition
+  - sh_num_cpus
+  - sh_num_nodes
+  - bc_num_hours
+  - bc_email_on_started
+
+attributes:
+  modules:
+    help: "space separated list of environment modules you'd like to load for that job."
+  bc_queue:
+    value: "dev"
+  sh_num_cpus:
+    label: "Number of CPUs"
+    widget: "number_field"
+    min: 1
+    value: "1"
+  sh_num_nodes:
+    label: "Number of nodes"
+    widget: "number_field"
+    value: "1"
+  bc_num_hours:
+    label: "Runtime (in hours)"
+

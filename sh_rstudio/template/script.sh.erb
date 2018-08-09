@@ -1,0 +1,65 @@
+#!/usr/bin/env bash
+
+#
+# Load modules
+#
+
+# Purge the module environment to avoid conflicts
+module reset
+
+# Load the rstudio module (required)
+module load rstudio
+
+# Load the proot module (required)
+module load system proot
+
+<%- unless context.modules.blank? -%>
+# Load the require modules
+module load <%= context.modules %>
+<%- end -%>
+
+
+#
+# Start RStudio Server
+#
+
+# PAM auth helper used by RStudio
+export RSTUDIO_AUTH="${PWD}/bin/auth"
+
+# Generate an `rsession` wrapper script
+export RSESSION_WRAPPER_FILE="${PWD}/rsession.sh"
+(
+umask 077
+sed 's/^ \{2\}//' > "${RSESSION_WRAPPER_FILE}" << EOL
+  #!/usr/bin/env bash
+
+  # Log all output from this script
+  export RSESSION_LOG_FILE="${RSTUDIO_SINGULARITY_HOST_MNT}${PWD}/rsession.log"
+  exec &>>"\${RSESSION_LOG_FILE}"
+
+  # Launch the original command
+  echo "Launching rsession..."
+  set -x
+  exec rsession --r-libs-user "${R_LIBS_USER}" "\${@}"
+EOL
+)
+chmod 700 "${RSESSION_WRAPPER_FILE}"
+
+# Define launcher for `rserver` if not using Singularity
+if [[ -z "${RSTUDIO_SINGULARITY_IMAGE}" ]]; then
+  PROOT_BIN="${PROOT_BIN:-"$(which proot)"}"
+  RSERVER_LAUNCHER="${PROOT_BIN} -b $(mktemp -d):/tmp "
+fi
+
+# Set working directory to home directory
+cd "${HOME}"
+
+# Launch the RStudio Server
+echo "Starting up rserver..."
+set -x
+${RSERVER_LAUNCHER}rserver \
+  --www-port ${port} \
+  --auth-none 0 \
+  --auth-pam-helper-path "${RSTUDIO_SINGULARITY_HOST_MNT}${RSTUDIO_AUTH}" \
+  --auth-encrypt-password 0 \
+  --rsession-path "${RSTUDIO_SINGULARITY_HOST_MNT}${RSESSION_WRAPPER_FILE}"
