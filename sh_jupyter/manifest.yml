@@ -3,5 +3,6 @@ name: Jupyter Notebook
 category: Interactive Apps
 subcategory: Servers
 role: batch_connect
-description: |
-  This app will launch a Jupyter Notebook server on one or more nodes.
+description: "This app will launch a [Jupyter Notebook] server on [Sherlock].
+  \r\n\r\n[Jupyter Notebook]: https://www.jupyter.org/\r\n[Sherlock]:
+  https://www.sherlock.stanford.edu\r\n"
