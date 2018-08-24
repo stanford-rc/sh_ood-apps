@@ -1,0 +1,23 @@
+#!/usr/bin/env bash
+
+#
+# Load modules
+#
+
+# Load the Jupyter module (required)
+module load <%= context.sh_tf_version %>
+
+<%- unless context.sh_modules.blank? -%>
+# Load additional modules
+module load <%= context.sh_modules %>
+<%- end -%>
+
+#
+# Start Tensorboard Server
+#
+
+# Set working directory to home directory
+cd "${HOME}"
+
+# Launch the Tensorboard Server
+tensorboard --logdir=<%= context.tb_logdir %> --port="${port}" <%= context.tb_extra_args %>

@@ -1,0 +1,10 @@
+batch_connect:
+  template: "basic"
+
+script:
+  native: [ "-N", "<%= sh_num_nodes.blank? ? 1 : sh_num_nodes.to_i %>",
+            "-c", "<%= sh_num_cpus.blank?  ? 1 : sh_num_cpus.to_i %>",
+            "--gres", "gpu:<%= sh_num_gpus.blank? ? 1 : sh_num_gpus.to_i %>"
+          ]
+  queue_name: <%= sh_partition.blank? ? "gpu" : sh_partition.strip %>
+
