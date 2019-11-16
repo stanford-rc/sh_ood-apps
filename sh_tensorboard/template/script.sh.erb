@@ -4,7 +4,7 @@
 # Load modules
 #
 
-# Load the Jupyter module (required)
+# Load the Tensorflow module (required)
 module load <%= context.sh_tf_version %>
 
 <%- unless context.sh_modules.blank? -%>
@@ -20,4 +20,8 @@ module load <%= context.sh_modules %>
 cd "${HOME}"
 
 # Launch the Tensorboard Server
-tensorboard --logdir=<%= context.tb_logdir %> --port="${port}" <%= context.tb_extra_args %>
+# start on 127.0.0.1, since TensorBoard doesn't support any kind of authentication
+# and we rely on authrevproxy to only allow authentified requests
+tensorboard --logdir=<%= context.tb_logdir %> <%= context.tb_extra_args %> \
+            --host=127.0.0.1 \
+            --port="${app_port}"

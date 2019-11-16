@@ -3,7 +3,7 @@ name: TensorBoard
 category: Interactive Apps
 subcategory: Servers
 role: batch_connect
-description: | 
+description: |
   This app will launch [TensorBoard], [TensorFlow]'s Visualization Toolkit, on [Sherlock].
   [TensorBoard]: https://www.tensorflow.org/guide/summaries_and_tensorboard
   [TensorFlow]: https://www.tensorflow.org/

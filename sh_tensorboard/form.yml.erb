@@ -1,5 +1,5 @@
 <%-
-  # get _list_partitions
+  # get _list_partitions w/ GPUs
   p_cmd = "sinfo -ho %R,%G | awk -F, '/gpu/ {print $1}' | sort -u"
   begin
     output, status = Open3.capture2e(p_cmd)
@@ -38,25 +38,25 @@ form:
   - sh_partition
   - sh_num_cpus
   - sh_num_gpus
-  - sh_num_nodes
+  - sh_mem
   - bc_num_hours
   - bc_email_on_started
 
 attributes:
 
   sh_modules:
-    label: "Additional modules"
+    label: "Additional modules to load (optional)"
     help: |
-        <small>Space separated list of additional environment modules to load (eg. `py-scipystack`).</br/> 
+        <small>Space separated list of additional environment modules to load (eg. `py-scipystack`).</br/>
         Full list at https://www.sherlock.stanford.edu/docs/software/list </small>
-
-  tb_extra_args:
-    label: "Additional TensorBoard arguments (optional)"
 
   tb_logdir:
     label: "Tensorboard logdir"
     required: true
     help: "The directory that contains data to visualize."
+
+  tb_extra_args:
+    label: "Additional TensorBoard arguments (optional)"
 
   sh_tf_version:
     label: "Tensorflow version"
@@ -81,7 +81,7 @@ attributes:
     value: "gpu"
     required: true
     help: |
-      <small>Partition to submit the job to (only _list_partitions with GPU nodes are listed).</small>
+      <small>Partition to submit the job to (only partitions with GPU nodes are listed).</small>
     <%- if p_error -%>
       <span class="text-danger">Error when parsing _list_partitions:</span>
       ```
@@ -101,24 +101,23 @@ attributes:
   sh_num_cpus:
     label: "Number of CPUs"
     widget: "number_field"
-    help: "<small>Number of CPU-cores to use on each node</small>"
+    help: "<small>Number of CPU cores to allocate</small>"
     min: 1
     value: "1"
 
   sh_num_gpus:
     label: "Number of GPUs"
     widget: "number_field"
-    help: "<small>Number of GPUs to use on each node</small>"
+    help: "<small>Number of GPUs to allocate</small>"
     min: 1
     max: 8
     value: "1"
     required: true
 
-  sh_num_nodes:
-    label: "Number of nodes"
+  sh_mem:
+    label: "Amount of memory (GB) (optional)"
     widget: "number_field"
-    value: "1"
-    help: "<small>Number of compute nodes to request, only useful for network-aware parallel frameworks such as MPI.</small>"
+    help: "<small>Amount of memory to allocate</small>"
 
   bc_num_hours:
     label: "Runtime (in hours)"

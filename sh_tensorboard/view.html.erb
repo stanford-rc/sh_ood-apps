@@ -1,4 +1,23 @@
-<form action="/rnode/<%= host %>/<%= port %>/" method="post" target="_blank">
+<%-
+  # generate form id, based on host and port
+  form_id = Digest::SHA1.hexdigest("--" + host.to_s + "--" + port.to_s + "--")
+-%>
+
+<script>
+function setCookie(cname, cvalue, exdays) {
+    var d = new Date();
+    d.setTime(d.getTime() + (exdays*24*60*60*1000));
+    var expires = "expires="+ d.toUTCString();
+    document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
+}
+// find closest anscestor with .panel class, to get session id
+var s = document.getElementById("<%= form_id %>").closest(".panel").id;
+var p = "<%= password %>";
+var c = "_ood_token_" + s;
+var e = 7;
+</script>
+
+<form id="<%= form_id %>" action="/rnode/<%= host %>/<%= port %>/" method="post" target="_blank" onsubmit="setCookie(c,p,e)">
   <button class="btn btn-primary" type="submit">
     <i class="fa fa-eye"></i> Connect to Tensorboard
   </button>
