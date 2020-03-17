@@ -1,6 +1,6 @@
 <%-
-  # get _list_partitions w/ GPUs
-  p_cmd = "sinfo -ho %R,%G | awk -F, '/gpu/ {print $1}' | sort -u"
+  # get _list_partitions
+  p_cmd = "sinfo -ho %R | sort -u"
   begin
     output, status = Open3.capture2e(p_cmd)
     if status.success?
@@ -81,7 +81,7 @@ attributes:
     value: "gpu"
     required: true
     help: |
-      <small>Partition to submit the job to (only partitions with GPU nodes are listed).</small>
+      <small>Partition to submit the job to.</small>
     <%- if p_error -%>
       <span class="text-danger">Error when parsing _list_partitions:</span>
       ```
@@ -106,13 +106,11 @@ attributes:
     value: "1"
 
   sh_num_gpus:
-    label: "Number of GPUs"
+    label: "Number of GPUs (optional)"
     widget: "number_field"
     help: "<small>Number of GPUs to allocate</small>"
     min: 1
     max: 8
-    value: "1"
-    required: true
 
   sh_mem:
     label: "Amount of memory (GB) (optional)"
