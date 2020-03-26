@@ -1,4 +1,5 @@
 <%-
+  # get partition list
   cmd = "sinfo -ho %R"
   begin
     output, status = Open3.capture2e(cmd)
@@ -11,25 +12,61 @@
     partitions = []
     error = e.message.strip
   end
+
+  # get R modules
+  m_cmd = "bash -il -c 'module -t avail R/ |& grep ^R/' 2>/dev/null"
+  begin
+    output, status = Open3.capture2e(m_cmd)
+    if status.success?
+      _list_r_versions = output.split("\n").map(&:strip).reject(&:blank?).sort
+    else
+      raise output
+    end
+  rescue => e
+    _list_r_versions = []
+    m_error = e.message.strip
+  end
 -%>
 ---
 cluster: "sherlock"
 
 form:
-  - modules
+  - sh_r_version
+  - sh_modules
   - sh_partition
   - sh_num_cpus
   - sh_num_gpus
+  - sh_mem
   - sh_num_nodes
   - bc_num_hours
   - bc_email_on_started
 
 attributes:
 
-  modules:
-    help: | 
-        <small>Space separated list of additional environment modules to load (eg. `r-rstan`).</br/> 
+  sh_modules:
+    label: "Additional modules to load (optional)"
+    help: |
+        <small>Space separated list of additional environment modules to load.</br/>
         Full list at https://www.sherlock.stanford.edu/docs/software/list </small>
+
+  sh_r_version:
+    label: "R version"
+    <%- if m_error -%>
+      <span class="text-danger">Error when parsing module versions:</span>
+      ```
+      <%= m_error.gsub("\n", "\n      ") %>
+      ```
+    <%- end -%>
+    <%- if _list_r_versions.blank? -%>
+    widget: text_field
+    <%- else -%>
+    widget: select
+    options:
+      <%- _list_r_versions.each do |q| -%>
+      - [ "<%= q %>", "<%= q %>" ]
+      <%- end -%>
+    <%- end -%>
+
 
   sh_partition:
     label: "Partition"
@@ -68,6 +105,11 @@ attributes:
     min: 1
     max: 8
     value: ""
+
+  sh_mem:
+    label: "Amount of memory (GB) (optional)"
+    widget: "number_field"
+    help: "<small>Amount of memory to allocate</small>"
 
   sh_num_nodes:
     label: "Number of nodes"
