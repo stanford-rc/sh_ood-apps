@@ -3,9 +3,11 @@ batch_connect:
 
 script:
   native: [ "-c", "<%= sh_num_cpus.blank?  ? 1 : sh_num_cpus.to_i %>",
-            "-G", "<%= sh_num_gpus.blank?  ? 1 : sh_num_gpus.to_i %>",
+            <%- if not sh_num_gpus.blank? -%>
+                "-G", "<%= sh_num_gpus.to_i %>",
+            <%- end -%>
             <%- if not sh_mem.blank? -%>
-            "--mem", "<%= sh_mem.to_i %>GB"
+                "--mem", "<%= sh_mem.to_i %>GB"
             <%- end -%>
           ]
   queue_name: <%= sh_partition.blank? ? "gpu" : sh_partition.strip %>
