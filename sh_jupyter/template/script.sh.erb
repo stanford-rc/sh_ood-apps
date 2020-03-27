@@ -16,9 +16,9 @@ module purge
 # Load the Jupyter module (required)
 module load py-jupyter/1.0.0_<%= context.sh_python_version %>
 
-<%- unless context.modules.blank? -%>
+<%- unless context.sh_modules.blank? -%>
 # Load the require modules
-module load <%= context.modules %>
+module load <%= context.sh_modules %>
 <%- end -%>
 
 # List loaded modules
@@ -29,4 +29,4 @@ echo "TIMING - Starting jupyter at: $(date)"
 
 # Launch the Jupyter Notebook Server
 set -x
-jupyter notebook --config="${CONFIG_FILE}" <%= context.extra_jupyter_args %>
+jupyter notebook --config="${CONFIG_FILE}" <%= context.sh_extra_jupyter_args %>
