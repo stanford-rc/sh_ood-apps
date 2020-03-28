@@ -1,15 +1,16 @@
 <%-
-  cmd = "sinfo -ho %R"
+  # get _list_partitions
+  p_cmd = "sinfo -ho %R | sort -u"
   begin
-    output, status = Open3.capture2e(cmd)
+    output, status = Open3.capture2e(p_cmd)
     if status.success?
-      partitions = output.split("\n").map(&:strip).reject(&:blank?).sort
+      _list_partitions = output.split("\n").map(&:strip).reject(&:blank?).sort
     else
       raise output
     end
   rescue => e
-    partitions = []
-    error = e.message.strip
+    _list_partitions = []
+    p_error = e.message.strip
   end
 -%>
 ---
@@ -17,21 +18,25 @@ cluster: "sherlock"
 
 form:
   - sh_python_version
-  - extra_jupyter_args
-  - modules
+  - sh_extra_jupyter_args
+  - sh_modules
   - sh_partition
-  - sh_num_cpus
-  - sh_num_gpus
-  - sh_num_nodes
+  - sh_cpus
+  - sh_gpus
+  - sh_mem
   - bc_num_hours
   - bc_email_on_started
 
 attributes:
 
-  modules:
-    help: | 
-        <small>Space separated list of additional environment modules to load (eg. `py-scipystack`).</br/> 
+  sh_modules:
+    label: "Additional modules (optional)"
+    help: |
+        <small>Space separated list of additional modules to load (eg. `py-numpy/1.17.2_py36`)</br/>
         Full list at https://www.sherlock.stanford.edu/docs/software/list </small>
+
+  sh_extra_jupyter_args:
+    label: "Extra Jupyter arguments (optional)"
 
   sh_python_version:
     label: "Python version"
@@ -44,46 +49,46 @@ attributes:
   sh_partition:
     label: "Partition"
     value: "dev"
+    required: true
     help: |
-      <small>Partition to submit the job to.</small>
-    <%- if error -%>
-
+      <small>Partition to submit the job to</small>
+    <%- if p_error -%>
       <span class="text-danger">Error when parsing partitions:</span>
-
       ```
-      <%= error.gsub("\n", "\n      ") %>
+      <%= p_error.gsub("\n", "\n      ") %>
       ```
     <%- end -%>
-  <%- if partitions.blank? -%>
+    <%- if _list_partitions.blank? -%>
     widget: text_field
-  <%- else -%>
+    <%- else -%>
     widget: select
     options:
-    <%- partitions.each do |q| -%>
+      <%- _list_partitions.each do |q| -%>
       - [ "<%= q %>", "<%= q %>" ]
+      <%- end -%>
     <%- end -%>
-  <%- end -%>
 
-  sh_num_cpus:
-    label: "Number of CPUs"
+  sh_cpus:
+    label: "#CPUs"
     widget: "number_field"
-    help: "<small>Number of CPU-cores to use on each node</small>"
+    help: "<small>Number of CPU cores to allocate</small>"
+    required: true
     min: 1
     value: "1"
 
-  sh_num_gpus:
-    label: "Number of GPUs (optional)"
+
+  sh_gpus:
+    label: "#GPUs (optional)"
     widget: "number_field"
-    help: "<small>Number of GPUs to use on each node. <br/>When requesting GPUs, don't forget to load the `cuda` module in the `Modules` field above.</small>"
+    help: "<small>Number of GPUs to allocate (don't forget to load the `cuda` module in the `Modules` field above and to select a partition with GPUs)</small>"
     min: 1
     max: 8
     value: ""
 
-  sh_num_nodes:
-    label: "Number of nodes"
+  sh_mem:
+    label: "Memory (GB) (optional)"
     widget: "number_field"
-    value: "1"
-    help: "<small>Number of compute nodes to request, only useful for network-aware parallel frameworks such as MPI.</small>"
+    help: "<small>Amount of memory to allocate</small>"
 
   bc_num_hours:
     label: "Runtime (in hours)"

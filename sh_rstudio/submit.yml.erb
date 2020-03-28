@@ -2,14 +2,14 @@ batch_connect:
   template: "basic"
 
 script:
-  native: [ "-N", "<%= sh_num_nodes.blank? ? 1 : sh_num_nodes.to_i %>",
-            "-c", "<%= sh_num_cpus.blank?  ? 1 : sh_num_cpus.to_i %>",
-            <%- if not sh_num_gpus.blank? -%>
-                "-G", "<%= sh_num_gpus.to_i %>",
+  native: [
+            "-c", "<%= sh_cpus.blank?  ? 1 : sh_cpus.to_i %>",
+            <%- if not sh_gpus.blank? -%>
+                "-G", "<%= sh_gpus.to_i %>",
             <%- end -%>
             <%- if not sh_mem.blank? -%>
                 "--mem", "<%= sh_mem.to_i %>GB"
             <%- end -%>
           ]
-  queue_name: <%= sh_partition.blank? ? "normal" : sh_partition.strip %>
+  queue_name: <%= sh_partition.blank? ? "dev" : sh_partition.strip %>
 
