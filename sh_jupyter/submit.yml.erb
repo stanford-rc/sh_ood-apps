@@ -8,7 +8,7 @@ script:
                 "-G", "<%= sh_gpus.to_i %>",
             <%- end -%>
             <%- if not sh_mem.blank? -%>
-                "--mem", "<%= sh_mem.to_i %>GB"
+                "--mem", "<%= sh_mem.to_i %>G"
             <%- end -%>
           ]
   queue_name: <%= sh_partition.blank? ? "dev" : sh_partition.strip %>
