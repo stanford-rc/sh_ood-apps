@@ -3,6 +3,9 @@ name: RStudio Server
 category: Interactive Apps
 subcategory: Servers
 role: batch_connect
-description: "This app will launch [RStudio Server] an IDE for [R] on [Sherlock].
-  \r\n\r\n[RStudio Server]: https://www.rstudio.com/products/rstudio-server/\r\n[R]:
-  https://www.r-project.org/\r\n[Sherlock]: https://www.sherlock.stanford.edu\r\n"
+description: |
+  This app will launch [RStudio Server] an IDE for [R] on [Sherlock].
+  
+  [RStudio Server]: https://www.rstudio.com/products/rstudio-server/
+  [R]: https://www.r-project.org/
+  [Sherlock]: https://www.sherlock.stanford.edu

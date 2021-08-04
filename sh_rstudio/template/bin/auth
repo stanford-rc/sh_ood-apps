@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 # Confirm username is supplied
-if [[ $# -ne 1 ]]; then
+if [[ $# -lt 1 ]]; then
   echo "Usage: auth USERNAME"
   exit 1
 fi

@@ -13,9 +13,6 @@ module load rstudio
 # Load the requested R module (required)
 module load <%= context.sh_r_version %>
 
-# Load the proot module (required)
-module load system proot
-
 <%- unless context.sh_modules.blank? -%>
 # Load additional modules (optional)
 module load <%= context.sh_modules %>
@@ -37,7 +34,7 @@ sed 's/^ \{2\}//' > "${RSESSION_WRAPPER_FILE}" << EOL
   #!/usr/bin/env bash
 
   # Log all output from this script
-  export RSESSION_LOG_FILE="${RSTUDIO_SINGULARITY_HOST_MNT}${PWD}/rsession.log"
+  export RSESSION_LOG_FILE="${PWD}/rsession.log"
   exec &>>"\${RSESSION_LOG_FILE}"
 
   # Launch the original command
@@ -48,21 +45,17 @@ EOL
 )
 chmod 700 "${RSESSION_WRAPPER_FILE}"
 
-# Define launcher for `rserver` if not using Singularity
-if [[ -z "${RSTUDIO_SINGULARITY_IMAGE}" ]]; then
-  PROOT_BIN="${PROOT_BIN:-"$(which proot)"}"
-  RSERVER_LAUNCHER="${PROOT_BIN} -b $(mktemp -d):/tmp "
-fi
-
 # Set working directory to home directory
 cd "${HOME}"
 
 # Launch the RStudio Server
 echo "Starting up rserver..."
 set -x
-${RSERVER_LAUNCHER}rserver \
+rserver \
   --www-port ${port} \
   --auth-none 0 \
-  --auth-pam-helper-path "${RSTUDIO_SINGULARITY_HOST_MNT}${RSTUDIO_AUTH}" \
+  --auth-pam-helper-path "${RSTUDIO_AUTH}" \
   --auth-encrypt-password 0 \
-  --rsession-path "${RSTUDIO_SINGULARITY_HOST_MNT}${RSESSION_WRAPPER_FILE}"
+  --rsession-path "${RSESSION_WRAPPER_FILE}" \
+  --server-data-dir "${TMPDIR}" \
+  --secure-cookie-key-file "${TMPDIR}/rstudio-server/secure-cookie-key" 2>&1
