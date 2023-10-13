@@ -1,17 +1,6 @@
 <%-
-  # get _list_partitions
-  p_cmd = "sinfo -ho %R | sort -u"
-  begin
-    output, status = Open3.capture2e(p_cmd)
-    if status.success?
-      _list_partitions = output.split("\n").map(&:strip).reject(&:blank?).sort
-    else
-      raise output
-    end
-  rescue => e
-    _list_partitions = []
-    p_error = e.message.strip
-  end
+  # get the partition list from the dashboard initializer
+  _list_partitions = Partitions.list
 -%>
 ---
 cluster: "sherlock"
@@ -53,19 +42,13 @@ attributes:
     required: true
     help: |
       <small>Partition to submit the job to</small>
-    <%- if p_error -%>
-      <span class="text-danger">Error when parsing partitions:</span>
-      ```
-      <%= p_error.gsub("\n", "\n      ") %>
-      ```
-    <%- end -%>
     <%- if _list_partitions.blank? -%>
     widget: text_field
     <%- else -%>
     widget: select
     options:
-      <%- _list_partitions.each do |q| -%>
-      - [ "<%= q %>", "<%= q %>" ]
+      <%- _list_partitions.each do |p| -%>
+      - "<%= p %>"
       <%- end -%>
     <%- end -%>
 

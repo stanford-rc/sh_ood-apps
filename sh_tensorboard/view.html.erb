@@ -10,8 +10,8 @@ function setCookie(cname, cvalue, exdays) {
     var expires = "expires="+ d.toUTCString();
     document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
 }
-// find closest anscestor with .panel class, to get session id
-var s = document.getElementById("<%= form_id %>").closest(".panel").id;
+// find closest anscestor with .card class, to get session id
+var s = document.getElementById("<%= form_id %>").closest(".card").getAttribute("data-id");
 var p = "<%= password %>";
 var c = "_ood_token_" + s;
 var e = 7;
