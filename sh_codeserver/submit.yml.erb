@@ -1,0 +1,15 @@
+batch_connect:
+  template: "basic"
+  conn_params:
+    - code_server_version
+script:
+  native: [
+            "-c", "<%= sh_cpus.blank?  ? 1 : sh_cpus.to_i %>",
+            <%- if not sh_gpus.blank? -%>
+                "-G", "<%= sh_gpus.to_i %>",
+            <%- end -%>
+            <%- if not sh_mem.blank? -%>
+                "--mem", "<%= sh_mem.to_i %>G"
+            <%- end -%>
+          ]
+  queue_name: <%= sh_partition.blank? ? "dev" : sh_partition.strip %>
