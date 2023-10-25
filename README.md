@@ -3,6 +3,11 @@
 This repository contains [Open OnDemand](https://openondemand.org/) used on
 [Sherlock](https://www.sherlock.stanford.edu)
 
+## `sh_codeserver`
+
+Local customizations for [code-server](https://coder.com/docs/code-server), based on 
+https://github.com/OSC/bc_osc_codeserver
+
 ## `sh_jupyter`
 
 Local customizations for [Jupyter](https://jupyter.org/) notebooks, based on

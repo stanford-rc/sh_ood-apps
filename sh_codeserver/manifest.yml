@@ -1,0 +1,11 @@
+---
+name: Code-server
+category: Interactive Apps
+subcategory: Servers
+role: batch_connect
+description: |
+  This app will launch a [VS Code] server using [code-server] on [Sherlock].
+
+  [VS Code]: https://code.visualstudio.com/
+  [code-server]: https://coder.com/
+  [Sherlock]: https://www.sherlock.stanford.edu/
