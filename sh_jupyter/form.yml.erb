@@ -1,15 +1,10 @@
-<%-
-  # get the partition list from the dashboard initializer
-  _list_partitions = Partitions.list
--%>
----
 cluster: "sherlock"
 
 form:
   - sh_python_version
   - sh_extra_jupyter_args
   - sh_modules
-  - sh_partition
+  - auto_queues
   - sh_cpus
   - sh_gpus
   - sh_mem
@@ -34,23 +29,7 @@ attributes:
       - [ "Python 2.7", "py27" ]
       - [ "Python 3.6", "py36" ]
       - [ "Python 3.9", "py39" ]
-    value: "py36"
-
-  sh_partition:
-    label: "Partition"
-    value: "dev"
-    required: true
-    help: |
-      <small>Partition to submit the job to</small>
-    <%- if _list_partitions.blank? -%>
-    widget: text_field
-    <%- else -%>
-    widget: select
-    options:
-      <%- _list_partitions.each do |p| -%>
-      - "<%= p %>"
-      <%- end -%>
-    <%- end -%>
+    value: "py39"
 
   sh_cpus:
     label: "#CPUs"
@@ -59,7 +38,6 @@ attributes:
     required: true
     min: 1
     value: "1"
-
 
   sh_gpus:
     label: "#GPUs (optional)"
