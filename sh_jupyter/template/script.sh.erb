@@ -1,20 +1,13 @@
 #!/usr/bin/env bash
 
-# Benchmark info
-echo "TIMING - Starting main script at: $(date)"
-
-# Set working directory to home directory
-cd "${HOME}"
-
-#
-# Start Jupyter Notebook Server
-#
+# Set working directory to notebook root directory
+cd "${NOTEBOOK_ROOT}"
 
 # Purge the module environment to avoid conflicts
 module purge
 
 # Load the Jupyter module (required)
-module load py-jupyter/1.0.0_<%= context.sh_python_version %>
+module load $(module -t av py-<%= context.jp_mode %> | grep <%= context.sh_python_version %>)
 
 <%- unless context.sh_modules.blank? -%>
 # Load the require modules
@@ -29,4 +22,4 @@ echo "TIMING - Starting jupyter at: $(date)"
 
 # Launch the Jupyter Notebook Server
 set -x
-jupyter notebook --config="${CONFIG_FILE}" <%= context.sh_extra_jupyter_args %>
+jupyter <%= context.jp_mode == "jupyterlab" ? "lab" : "notebook" %> --config="${CONFIG_FILE}" <%= context.sh_extra_jupyter_args %>

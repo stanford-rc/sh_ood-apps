@@ -1,6 +1,7 @@
 cluster: "sherlock"
 
 form:
+  - jp_mode
   - sh_python_version
   - sh_extra_jupyter_args
   - sh_modules
@@ -12,6 +13,14 @@ form:
   - bc_email_on_started
 
 attributes:
+
+  jp_mode:
+    label: "Jupyter mode"
+    widget: "radio"
+    value: "1"
+    options:
+      - ["Jupyter Lab", "jupyterlab"]
+      - ["Jupyter Notebook", "notebook"]
 
   sh_modules:
     label: "Additional modules (optional)"

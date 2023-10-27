@@ -30,7 +30,7 @@
 [[ $(type -t module) == "function" ]] && export -f module
 
 # Find available port to run server on
-port=$(find_port)
+port=$(find_port $host)
 
 # Generate SHA1 encrypted password (requires OpenSSL installed)
 SALT="$(create_passwd 16)"
@@ -41,18 +41,48 @@ PASSWORD_SHA1="$(echo -n "${password}${SALT}" | openssl dgst -sha1 | awk '{print
 # `script.sh.erb` file when launching the Jupyter Notebook server.
 export CONFIG_FILE="${PWD}/config.py"
 
+# Safari users hit this error https://github.com/jupyterlab/jupyterlab/issues/5486
+# so let's make a new workspace dir that's this job's PWD and copy the defult /lab
+# workspace over there so folks can update it.
+WORKSPACE_DIR="$HOME/.jupyter/lab/workspaces"
+FILES=$(ls $WORKSPACE_DIR)
+
+for FILE in ${FILES[@]}
+do
+  ID=$(jq -r '.metadata.id' $WORKSPACE_DIR/$FILE)
+
+  if [[ $ID == "/lab" ]]; then
+    WORKSPACE_FILE="$WORKSPACE_DIR/$FILE"
+    break
+  fi
+done
+
+if [[ ${WORKSPACE_FILE+x} ]]; then
+  cp $WORKSPACE_FILE .
+fi
+
+export JUPYTERLAB_WORKSPACES_DIR=$PWD
+
+export jupyter_api="<%= context.jp_mode == "jupyterlab" ? "lab" : "tree" %>"
+export jupyter_name="<%= context.jp_mode == "jupyterlab" ? "JupyterLab" : "Jupyter Notebook" %>"
+
+# Notebook root directory
+export NOTEBOOK_ROOT="${NOTEBOOK_ROOT:-${HOME}}"
+
 # Generate Jupyter configuration file with secure file permissions
+<% context.jp_mode == "jupyterlab" && context.sh_python_version.sub("py","").to_i >= 39 ? cfg = "Server" : cfg = "Notebook" %>
 (
 umask 077
 cat > "${CONFIG_FILE}" << EOL
-c.NotebookApp.ip = '*'
-c.NotebookApp.port = ${port}
-c.NotebookApp.port_retries = 0
-c.NotebookApp.password = u'sha1:${SALT}:${PASSWORD_SHA1}'
-c.NotebookApp.base_url = '/node/${host}/${port}/'
-c.NotebookApp.open_browser = False
-c.NotebookApp.allow_origin = '*'
-c.NotebookApp.notebook_dir = '${HOME}'
-c.NotebookApp.disable_check_xsrf = True
+c.KernelSpecManager.ensure_native_kernel = False
+c.<%= cfg %>App.ip = '0.0.0.0'
+c.<%= cfg %>App.port = ${port}
+c.<%= cfg %>App.port_retries = 0
+c.<%= cfg %>App.password = u'sha1:${SALT}:${PASSWORD_SHA1}'
+c.<%= cfg %>App.base_url = '/node/${host}/${port}/'
+c.<%= cfg %>App.open_browser = False
+c.<%= cfg %>App.allow_origin = '*'
+c.<%= cfg %>App.notebook_dir = '${NOTEBOOK_ROOT}'
+c.<%= cfg %>App.disable_check_xsrf = True
 EOL
 )

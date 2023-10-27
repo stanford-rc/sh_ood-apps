@@ -1,8 +1,10 @@
 ---
-name: Jupyter Notebook
+name: JupyterLab / Notebook
 category: Interactive Apps
 subcategory: Servers
 role: batch_connect
-description: "This app will launch a [Jupyter Notebook] server on [Sherlock].
-  \r\n\r\n[Jupyter Notebook]: https://www.jupyter.org/\r\n[Sherlock]:
-  https://www.sherlock.stanford.edu\r\n"
+description: |
+    This app will launch a [JupyterLab / Notebook] server on [Sherlock]
+
+    [JupyterLab / Notebook]: https://www.jupyter.org
+    [Sherlock]: https://www.sherlock.stanford.edu
