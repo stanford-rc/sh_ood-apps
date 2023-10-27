@@ -5,6 +5,5 @@ subcategory: Servers
 role: batch_connect
 description: |
     This app will launch a [JupyterLab / Notebook] server on [Sherlock]
-
     [JupyterLab / Notebook]: https://www.jupyter.org
     [Sherlock]: https://www.sherlock.stanford.edu
