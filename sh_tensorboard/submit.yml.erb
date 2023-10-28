@@ -11,5 +11,4 @@ script:
                 "--mem", "<%= sh_mem.to_i %>G"
             <%- end -%>
           ]
-  queue_name: <%= sh_partition.blank? ? "dev" : sh_partition.strip %>
 

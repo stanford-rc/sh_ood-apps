@@ -1,30 +1,11 @@
-<%-
-  # get the partition list from the dashboard initializer
-  _list_partitions = Partitions.list
-
-  # get tensorflow modules
-  m_cmd = "bash -il -c 'module -t avail py-tensorflow |& grep tensorflow' 2>/dev/null"
-  begin
-    output, status = Open3.capture2e(m_cmd)
-    if status.success?
-      _list_tf_versions = output.split("\n").map(&:strip).reject(&:blank?).sort
-    else
-      raise output
-    end
-  rescue => e
-    _list_tf_versions = []
-    m_error = e.message.strip
-  end
--%>
----
 cluster: "sherlock"
 
 form:
-  - sh_tf_version
+  - auto_modules_py-tensorflow
   - tb_logdir
   - tb_extra_args
   - sh_modules
-  - sh_partition
+  - auto_queues
   - sh_cpus
   - sh_gpus
   - sh_mem
@@ -47,39 +28,15 @@ attributes:
   tb_extra_args:
     label: "Additional TensorBoard arguments (optional)"
 
-  sh_tf_version:
+  auto_modules_py-tensorflow:
     label: "Tensorflow version"
-    <%- if m_error -%>
-      <span class="text-danger">Error when parsing module versions:</span>
-      ```
-      <%= m_error.gsub("\n", "\n      ") %>
-      ```
-    <%- end -%>
-    <%- if _list_tf_versions.blank? -%>
-    widget: text_field
-    <%- else -%>
-    widget: select
-    options:
-      <%- _list_tf_versions.each do |q| -%>
-      - [ "<%= q %>", "<%= q %>" ]
-      <%- end -%>
-    <%- end -%>
 
-  sh_partition:
+  auto_queues:
     label: "Partition"
     value: "dev"
     required: true
     help: |
       <small>Partition to submit the job to</small>
-    <%- if _list_partitions.blank? -%>
-    widget: text_field
-    <%- else -%>
-    widget: select
-    options:
-      <%- _list_partitions.each do |q| -%>
-      - "<%= q %>"
-      <%- end -%>
-    <%- end -%>
 
   sh_cpus:
     label: "#CPUs"

@@ -5,7 +5,7 @@
 #
 
 # Load the Tensorflow module (required)
-module load <%= context.sh_tf_version %>
+module load <%= context.auto_modules_py_tensorflow %>
 
 <%- unless context.sh_modules.blank? -%>
 # Load additional modules
