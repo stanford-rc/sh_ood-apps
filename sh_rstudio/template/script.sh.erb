@@ -11,7 +11,7 @@ module reset
 module load rstudio
 
 # Load the requested R module (required)
-module load <%= context.sh_r_version %>
+module load <%= context.auto_modules_R %>
 
 <%- unless context.sh_modules.blank? -%>
 # Load additional modules (optional)

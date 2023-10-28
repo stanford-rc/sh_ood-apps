@@ -1,28 +1,9 @@
-<%-
-  # get the partition list from the dashboard initializer
-  _list_partitions = Partitions.list
-
-  # get R modules
-  m_cmd = "bash -il -c 'module -t avail R/ |& grep ^R/' 2>/dev/null"
-  begin
-    output, status = Open3.capture2e(m_cmd)
-    if status.success?
-      _list_r_versions = output.split("\n").map(&:strip).reject(&:blank?).sort
-    else
-      raise output
-    end
-  rescue => e
-    _list_r_versions = []
-    m_error = e.message.strip
-  end
--%>
----
 cluster: "sherlock"
 
 form:
-  - sh_r_version
+  - auto_modules_R
   - sh_modules
-  - sh_partition
+  - auto_queues
   - sh_cpus
   - sh_gpus
   - sh_mem
@@ -37,39 +18,15 @@ attributes:
         <small>Space separated list of additional modules to load</br/>
         Full list at https://www.sherlock.stanford.edu/docs/software/list </small>
 
-  sh_r_version:
-    label: "R version"
-    <%- if m_error -%>
-      <span class="text-danger">Error when parsing module versions:</span>
-      ```
-      <%= m_error.gsub("\n", "\n      ") %>
-      ```
-    <%- end -%>
-    <%- if _list_r_versions.blank? -%>
-    widget: text_field
-    <%- else -%>
-    widget: select
-    options:
-      <%- _list_r_versions.each do |q| -%>
-      - [ "<%= q %>", "<%= q %>" ]
-      <%- end -%>
-    <%- end -%>
+  auto_modules_R:
+    default: false
 
-  sh_partition:
+  auto_queues:
     label: "Partition"
     value: "dev"
     required: true
     help: |
       <small>Partition to submit the job to</small>
-    <%- if _list_partitions.blank? -%>
-    widget: text_field
-    <%- else -%>
-    widget: select
-    options:
-      <%- _list_partitions.each do |q| -%>
-      - "<%= q %>"
-      <%- end -%>
-    <%- end -%>
 
   sh_cpus:
     label: "#CPUs"
