@@ -22,24 +22,7 @@ module load <%= context.sh_modules %>
 CODE_SERVER_PATH="/share/software/user/open/<%= context.sh_codeserver_version %>"
 
 CODE_SERVER_DATAROOT="$HOME/.local/share/code-server"
-
-#
-# Configure file watcher settings
-#
-
-cat << EOF > $CODE_SERVER_DATAROOT/User/settings.json
-{
-    "remote.autoForwardPortsSource": "output",
-    "files.watcherExclude":{
-        "/**": true,
-        "/home/**": true,
-        "/scratch/**": true,
-        "/oak/**": true
-    }
-}
-EOF
-
-chmod 444 $CODE_SERVER_DATAROOT/User/settings.json
+mkdir -p "$CODE_SERVER_DATAROOT/extensions"
 
 # Expose the password to the server.
 export PASSWORD="$password"
@@ -61,7 +44,6 @@ code-server \
     --bind-addr="0.0.0.0:${port}" \
     --disable-telemetry \
     --ignore-last-opened \
-    --extensions-dir="${CODE_SERVER_PATH}/extensions" \
     --user-data-dir="$CODE_SERVER_DATAROOT" \
     --log debug \
     "${HOME}"
