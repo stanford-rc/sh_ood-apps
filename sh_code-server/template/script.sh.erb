@@ -11,47 +11,28 @@ module reset
 module load system git
 
 # Load the code-server module (required)
-module load <%= context.sh_codeserver_version %>
+module load code-server
 
 <%- unless context.sh_modules.blank? -%>
 # Load additional modules (optional)
 module load <%= context.sh_modules %>
-<%- end -%> 
+<%- end -%>
 
 # Set code-server path
-CODE_SERVER_PATH="/share/software/user/open/<%= context.sh_codeserver_version %>"
-
 CODE_SERVER_DATAROOT="$HOME/.local/share/code-server"
+CODE_SERVER_USER_DIR="$CODE_SERVER_DATAROOT/User"
 
-#
-# Configure file watcher settings
-#
-
-cat << EOF > $CODE_SERVER_DATAROOT/User/settings.json
-{
-    "remote.autoForwardPortsSource": "output",
-    "files.watcherExclude":{
-        "/**": true,
-        "/home/**": true,
-        "/scratch/**": true,
-        "/oak/**": true
-    }
-}
-EOF
-
-chmod 444 $CODE_SERVER_DATAROOT/User/settings.json
-
-# Expose the password to the server.
+# Expose the password to the server
 export PASSWORD="$password"
 
-# Print compute node.
+# Print compute node
 echo "$(date): Running on compute node ${compute_node}:$port"
 
 # Set working directory to home directory
 cd "${HOME}"
 
 #
-# Start Code Server.
+# Start code-server
 #
 echo "$(date): Started code-server"
 echo ""
@@ -60,8 +41,9 @@ code-server \
     --auth="password" \
     --bind-addr="0.0.0.0:${port}" \
     --disable-telemetry \
+    --disable-update-check \
     --ignore-last-opened \
-    --extensions-dir="${CODE_SERVER_PATH}/extensions" \
+    --extensions-dir="$CODE_SERVER_DATAROOT/extensions" \
     --user-data-dir="$CODE_SERVER_DATAROOT" \
     --log debug \
     "${HOME}"

@@ -1,4 +1,4 @@
-# Wait for the Code Server to start
+# Wait for code-server to start
 echo "$(date): Waiting for code-server to open port ${port}..."
 
 if wait_until_port_used "${host}:${port}" 300; then

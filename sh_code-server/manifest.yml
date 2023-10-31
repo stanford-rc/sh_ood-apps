@@ -1,5 +1,5 @@
 ---
-name: Code-server
+name: code-server
 category: Interactive Apps
 subcategory: Servers
 role: batch_connect
