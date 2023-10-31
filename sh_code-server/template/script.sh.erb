@@ -21,6 +21,7 @@ module load <%= context.sh_modules %>
 # Set code-server path
 CODE_SERVER_DATAROOT="$HOME/.local/share/code-server"
 CODE_SERVER_USER_DIR="$CODE_SERVER_DATAROOT/User"
+mkdir -p "$CODE_SERVER_DATAROOT/extensions"
 
 # Expose the password to the server
 export PASSWORD="$password"
@@ -45,5 +46,4 @@ code-server \
     --ignore-last-opened \
     --extensions-dir="$CODE_SERVER_DATAROOT/extensions" \
     --user-data-dir="$CODE_SERVER_DATAROOT" \
-    --log debug \
     "${HOME}"
