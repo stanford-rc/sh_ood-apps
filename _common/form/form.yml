@@ -1,0 +1,7 @@
+- sh_modules
+- auto_queues
+- sh_cpus
+- sh_gpus
+- sh_mem
+- bc_num_hours
+- bc_email_on_started

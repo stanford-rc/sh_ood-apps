@@ -1,49 +1,11 @@
 cluster: "sherlock"
 
 form:
-  - sh_modules
-  - auto_queues
-  - sh_cpus
-  - sh_gpus
-  - sh_mem
-  - bc_num_hours
-  - bc_email_on_started
+<%- IO.foreach(File.expand_path(File.dirname(__FILE__))+"/../_common/form/form.yml") do |line| %>
+  <%= line %>
+<%- end -%>
 
 attributes:
-
-  sh_modules:
-    label: "Additional modules (optional)"
-    help: |
-        <small>Space separated list of additional modules to load</br/>
-        Full list at https://www.sherlock.stanford.edu/docs/software/list </small>
-
-  auto_queues:
-    label: "Partition"
-    value: "dev"
-    required: true
-    help: |
-      <small>Partition to submit the job to</small>
-
-  sh_cpus:
-    label: "#CPUs"
-    widget: "number_field"
-    help: "<small>Number of CPU cores to allocate</small>"
-    required: true
-    min: 1
-    value: "1"
-
-  sh_gpus:
-    label: "#GPUs (optional)"
-    widget: "number_field"
-    help: "<small>Number of GPUs to allocate (don't forget to load the `cuda` module in the `Modules` field above and to select a partition with GPUs)</small>"
-    min: 1
-    max: 8
-    value: ""
-
-  sh_mem:
-    label: "Memory (GB) (optional)"
-    widget: "number_field"
-    help: "<small>Amount of memory to allocate</small>"
-
-  bc_num_hours:
-    label: "Runtime (in hours)"
+<%- IO.foreach(File.expand_path(File.dirname(__FILE__))+"/../_common/form/attributes.yml") do |line| %>
+  <%= line %>
+<%- end -%>
