@@ -1,0 +1,9 @@
+---
+name: Jupyter Notebook
+category: Interactive Apps
+subcategory: Servers
+role: batch_connect
+description: |
+    This app will launch a [Jupyter Notebook] server on [Sherlock]
+    [Jupyter Notebook]: https://www.jupyter.org
+    [Sherlock]: https://www.sherlock.stanford.edu

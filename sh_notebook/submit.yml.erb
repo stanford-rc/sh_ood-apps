@@ -1,0 +1,14 @@
+batch_connect:
+  template: "basic"
+
+script:
+  native: [
+            "-c", "<%= sh_cpus.blank?  ? 1 : sh_cpus.to_i %>",
+            <%- if not sh_gpus.blank? -%>
+                "-G", "<%= sh_gpus.to_i %>",
+            <%- end -%>
+            <%- if not sh_mem.blank? -%>
+                "--mem", "<%= sh_mem.to_i %>G"
+            <%- end -%>
+          ]
+
