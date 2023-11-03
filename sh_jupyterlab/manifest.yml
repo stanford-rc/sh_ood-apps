@@ -1,0 +1,9 @@
+---
+name: JupyterLab
+category: Interactive Apps
+subcategory: Servers
+role: batch_connect
+description: |
+    This app will launch a [JupyterLab] server on [Sherlock]
+    [JupyterLab]: https://www.jupyter.org
+    [Sherlock]: https://www.sherlock.stanford.edu

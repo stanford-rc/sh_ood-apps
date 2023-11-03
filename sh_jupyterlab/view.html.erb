@@ -20,15 +20,6 @@
 <form id="<%= form_id %>" action="<%= full_url %>" method="post" target="_blank" onsubmit="changeTarget()" >
   <input type="hidden" name="password" value="<%= password %>">
   <button class="btn btn-primary" type="submit">
-    <i class="fa fa-cogs"></i> Connect to <%= jupyter_name -%>
+    <i class="fa fa-cogs"></i> Connect to JupyterLab
   </button>
 </form>
-
-<!--
-<form action="/node/<%= host %>/<%= port %>/login" method="post" target="_blank">
-  <input type="hidden" name="password" value="<%= password %>">
-  <button class="btn btn-primary" type="submit">
-    <i class="fa fa-eye"></i> Connect to Jupyter
-  </button>
-</form>
--->

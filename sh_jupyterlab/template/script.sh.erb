@@ -7,7 +7,7 @@ cd "${NOTEBOOK_ROOT}"
 module purge
 
 # Load the Jupyter module (required)
-module load $(module -t av py-<%= context.jp_mode %> | grep <%= context.sh_python_version %>)
+module load $(module -t av py-jupyterlab | grep <%= context.sh_python_version %>)
 
 <%- unless context.sh_modules.blank? -%>
 # Load the require modules
@@ -17,6 +17,9 @@ module load <%= context.sh_modules %>
 # List loaded modules
 module list
 
+# check stuff
+jupyter kernelspec list
+jupyter labextension list
+
 # Launch the Jupyter Notebook Server
-set -x
-jupyter <%= context.jp_mode == "jupyterlab" ? "lab" : "notebook" %> --config="${CONFIG_FILE}" <%= context.sh_extra_jupyter_args %>
+jupyter lab --config="${CONFIG_FILE}" <%= context.sh_extra_jupyter_args %>

@@ -1,7 +1,6 @@
 cluster: "sherlock"
 
 form:
-  - jp_mode
   - sh_python_version
   - sh_extra_jupyter_args
 <%- IO.foreach(File.expand_path(File.dirname(__FILE__))+"/../_common/form/form.yml") do |line| %>
@@ -11,14 +10,6 @@ form:
 
 attributes:
 
-  jp_mode:
-    label: "Jupyter mode"
-    widget: "radio"
-    value: "1"
-    options:
-      - ["Jupyter Lab", "jupyterlab"]
-      - ["Jupyter Notebook", "notebook"]
-
   sh_extra_jupyter_args:
     label: "Extra Jupyter arguments (optional)"
 
@@ -26,7 +17,6 @@ attributes:
     label: "Python version"
     widget: select
     options:
-      - [ "Python 2.7", "py27" ]
       - [ "Python 3.6", "py36" ]
       - [ "Python 3.9", "py39" ]
     value: "py39"
