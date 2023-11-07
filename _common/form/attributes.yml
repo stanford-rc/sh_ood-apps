@@ -9,6 +9,7 @@ auto_queues:
   label: "Partition"
   value: "dev"
   required: true
+  display: true
   help: |
     <small>Partition to submit the job to</small>
 
