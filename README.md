@@ -28,4 +28,10 @@ Tensorboard sessions can only be accessed through the OnDemand portal.
 Local customizations for [code-server](https://coder.com/docs/code-server),
 based on https://github.com/OSC/bc_osc_codeserver
 
+## `sh_matlab`
+
+OnDemand app for Matlab, using
+[matlab-proxy](https://github.com/mathworks/matlab-proxy)
+
+
 
