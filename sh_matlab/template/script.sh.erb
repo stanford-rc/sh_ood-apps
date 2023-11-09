@@ -1,0 +1,15 @@
+#!/usr/bin/env bash
+
+module reset
+module load system py-matlab-proxy x11
+module load matlab # >= R2020b
+
+<%- unless context.sh_modules.blank? -%>
+module load <%= context.sh_modules %>
+<%- end -%>
+
+env MWI_APP_PORT="$port" \
+    MWI_APP_HOST="0.0.0.0" \
+    MWI_ENABLE_TOKEN_AUTH="True" \
+    MWI_AUTH_TOKEN="$password" \
+    matlab-proxy-app

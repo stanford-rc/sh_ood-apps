@@ -1,0 +1,11 @@
+---
+name: MATLAB
+category: Interactive Apps
+subcategory: Servers
+role: batch_connect
+description: |
+  This app will launch a [MATLAB] server using [matlab-proxy] on [Sherlock].
+
+  [MATLAB]: https://www.mathworks.com/products/matlab.html
+  [matlab-proxy]: https://github.com/mathworks/matlab-proxy
+  [Sherlock]: https://www.sherlock.stanford.edu/
