@@ -1,13 +1,17 @@
 #!/usr/bin/env bash
 
+# load modules
 module reset
-module load system py-matlab-proxy x11
+module load system py-matlab-proxy x11 # Xvfb
 module load matlab # >= R2020b
-
 <%- unless context.sh_modules.blank? -%>
 module load <%= context.sh_modules %>
 <%- end -%>
 
+# set workspace
+cd <%= context.sh_workspace.blank? ? "$HOME" : context.sh_workspace %>
+
+# start server
 env MWI_APP_PORT="$port" \
     MWI_APP_HOST="0.0.0.0" \
     MWI_ENABLE_TOKEN_AUTH="True" \
