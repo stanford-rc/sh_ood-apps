@@ -2,8 +2,13 @@
 [[ $(type -t module) == "function" ]] && export -f module
 
 # Find available port to run server on
-port=$(find_port ${host})
+port=$(find_port $host)
 
 # Define a password and export it for RStudio authentication
-password="$(create_passwd 16)"
-export RSTUDIO_PASSWORD="${password}"
+password=$(create_passwd 16)
+export RSTUDIO_PASSWORD=$password
+
+# Generate CSRF token for RStudio
+<%- require 'securerandom'
+    csrftoken = SecureRandom.uuid -%>
+export csrftoken=<%= csrftoken %>

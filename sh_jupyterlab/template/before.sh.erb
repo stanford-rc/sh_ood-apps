@@ -1,85 +1,8 @@
-# This script (`before.sh.erb`) is sourced directly into the main Bash script
-# that is run when the batch job starts up. It is called before the `script.sh`
-# is forked off into a separate process.
-#
-# There are some helpful Bash functions that are made available to this script
-# that encapsulate commonly used routines when initializing a web server:
-#
-#   - find_port
-#       Find available port in range [$1..$2]
-#       Default: 2000 65535
-#
-#   - create_passwd
-#       Generate random alphanumeric password with $1 characters
-#       Default: 32
-#
-# We **MUST** supply the following environment variables in this
-# `before.sh.erb` script so that a user can connect back to the web server when
-# it is running (case-sensitive variable names):
-#
-#   - $host (already defined earlier, so no need to define again)
-#       The host that the web server is listening on
-#
-#   - $port
-#       The port that the web server is listening on
-#
-#   - $password
-#       The plain text password used to authenticate to the web server with
-
 # Export the module function if it exists
 [[ $(type -t module) == "function" ]] && export -f module
 
 # Find available port to run server on
-port=$(find_port $host)
+export port=$(find_port $host)
 
-# Generate SHA1 encrypted password (requires OpenSSL installed)
-SALT="$(create_passwd 16)"
-password="$(create_passwd 16)"
-PASSWORD_SHA1="$(echo -n "${password}${SALT}" | openssl dgst -sha1 | awk '{print $NF}')"
-
-# The `$CONFIG_FILE` environment variable is exported as it is used in the main
-# `script.sh.erb` file when launching the Jupyter Notebook server.
-export CONFIG_FILE="${PWD}/config.py"
-
-# Safari users hit this error https://github.com/jupyterlab/jupyterlab/issues/5486
-# so let's make a new workspace dir that's this job's PWD and copy the defult /lab
-# workspace over there so folks can update it.
-WORKSPACE_DIR="$HOME/.jupyter/lab/workspaces"
-FILES=$(ls $WORKSPACE_DIR)
-
-for FILE in ${FILES[@]}; do
-  ID=$(jq -r '.metadata.id' $WORKSPACE_DIR/$FILE)
-  if [[ $ID == "/lab" ]]; then
-    WORKSPACE_FILE="$WORKSPACE_DIR/$FILE"
-    break
-  fi
-done
-
-if [[ ${WORKSPACE_FILE+x} ]]; then
-  cp $WORKSPACE_FILE .
-fi
-
-export JUPYTERLAB_WORKSPACES_DIR=$PWD
-
-# Notebook root directory
-export NOTEBOOK_ROOT="${NOTEBOOK_ROOT:-${HOME}}"
-
-# Generate Jupyter configuration file with secure file permissions
-# configuration directives changed from NotebookApp to ServerApp at some point
-<% context.sh_python_version.sub("py","").to_i >= 39 ? cfg = "Server" : cfg = "Notebook" %>
-(
-umask 077
-cat > "${CONFIG_FILE}" << EOL
-c.KernelSpecManager.ensure_native_kernel = False
-c.<%= cfg %>App.ip = '0.0.0.0'
-c.<%= cfg %>App.port = ${port}
-c.<%= cfg %>App.base_url = '/node/${host}/${port}/'
-c.<%= cfg %>App.port_retries = 0
-c.<%= cfg %>App.password = u'sha1:${SALT}:${PASSWORD_SHA1}'
-c.<%= cfg %>App.open_browser = False
-c.<%= cfg %>App.allow_origin = '*'
-c.<%= cfg %>App.notebook_dir = '${NOTEBOOK_ROOT}'
-c.<%= cfg %>App.disable_check_xsrf = True
-c.LabApp.check_for_updates_class = "jupyterlab.NeverCheckForUpdate"
-EOL
-)
+# Create password for authentication
+export password=$(create_passwd 16)

@@ -2,18 +2,18 @@
 [[ $(type -t module) == "function" ]] && export -f module
 
 # find available port to run server on
-export app_port=$(find_port ${host})
+export app_port=$(find_port "$host")
 
-# find available port to run the AuthRevProxy on
-port=$(find_port ${host})
-export proxy_port=${port}
+# find another available port to run the AuthRevProxy on
+port=$(find_port "$host")
+export proxy_port=$port
 
 # generate password
-password="$(create_passwd 32)"
+password=$(create_passwd 32)
 
 # export token for cookie verification by authrevproxy
 # replace dashes by underscores in session.id
-export _ood_token_<%= session.id.gsub("-","_") %>=${password}
+export _ood_token_<%= session.id.gsub("-","_") %>=$password
 
-# start authrevproxy, to authentify web requests to the application
-bin/authrevproxy.py --app-port=${app_port} --proxy-port=${proxy_port} &
+# background start authrevproxy, to authentify web requests to the application
+bin/authrevproxy.py --app-port="$app_port" --proxy-port="$proxy_port" &
