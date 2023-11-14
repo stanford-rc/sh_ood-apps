@@ -1,61 +1,55 @@
 #!/usr/bin/env bash
 
-#
-# Load modules
-#
-
-# Purge the module environment to avoid conflicts
+# load modules
 module reset
-
-# Load the rstudio module (required)
-module load rstudio
-
-# Load the requested R module (required)
+module load rstudio/2023
 module load <%= context.auto_modules_R %>
-
 <%- unless context.sh_modules.blank? -%>
-# Load additional modules (optional)
 module load <%= context.sh_modules %>
 <%- end -%>
 
+# create server configuration
+export RSTUDIO_CONFIG_DIR=$PWD      # system config
+export RSTUDIO_CONFIG_HOME=$PWD     # user config
+export RSTUDIO_DATA_HOME=$PWD       # per-session storage
+export RSTUDIO_AUTH="$PWD/bin/auth"
 
-#
-# Start RStudio Server
-#
+_workspace_dir=<%= context.sh_workspace.blank? ? "$HOME" : context.sh_workspace %>
 
-# PAM auth helper used by RStudio
-export RSTUDIO_AUTH="${PWD}/bin/auth"
+cat <<-EOF > $RSTUDIO_CONFIG_DIR/rserver.conf
+server-user=$USER
+www-port=$port
+auth-none=0
+auth-pam-helper-path=$RSTUDIO_AUTH
+auth-encrypt-password=0
+auth-timeout-minutes=0
+database-config-file=$RSTUDIO_CONFIG_DIR/database.conf
+server-data-dir=$L_SCRATCH_JOB
+server-app-armor-enabled=0
+EOF
 
-# Generate an `rsession` wrapper script
-export RSESSION_WRAPPER_FILE="${PWD}/rsession.sh"
-(
-umask 077
-sed 's/^ \{2\}//' > "${RSESSION_WRAPPER_FILE}" << EOL
-  #!/usr/bin/env bash
+cat <<-EOF > $RSTUDIO_CONFIG_DIR/rsession.conf
+session-timeout-minutes=0
+session-timeout-suspend=0
+session-save-action-default=no
+session-quit-child-processes-on-exit=1
+r-restore-workspace=0
+session-default-working-dir=$_workspace_dir
+EOF
+cat <<-EOF > $RSTUDIO_CONFIG_DIR/logging.conf
+[*]
+log-level=info
+logger-type=file
+log-dir=$RSTUDIO_CONFIG_HOME/sessions
+EOF
+cat <<-EOF > $RSTUDIO_CONFIG_DIR/database.conf
+provider=sqlite
+directory=$RSTUDIO_CONFIG_DIR
+pool-size=$SLURM_CPUS_ON_NODE
+EOF
+mkdir $RSTUDIO_CONFIG_HOME/sessions
 
-  # Log all output from this script
-  export RSESSION_LOG_FILE="${PWD}/rsession.log"
-  exec &>>"\${RSESSION_LOG_FILE}"
+# start server
+rserver 2>&1
 
-  # Launch the original command
-  echo "Launching rsession..."
-  set -x
-  exec rsession --r-libs-user "${R_LIBS_USER}" "\${@}"
-EOL
-)
-chmod 700 "${RSESSION_WRAPPER_FILE}"
 
-# Set working directory to home directory
-cd "${HOME}"
-
-# Launch the RStudio Server
-echo "Starting up rserver..."
-set -x
-rserver \
-  --www-port ${port} \
-  --auth-none 0 \
-  --auth-pam-helper-path "${RSTUDIO_AUTH}" \
-  --auth-encrypt-password 0 \
-  --rsession-path "${RSESSION_WRAPPER_FILE}" \
-  --server-data-dir "${TMPDIR}" \
-  --secure-cookie-key-file "${TMPDIR}/rstudio-server/secure-cookie-key" 2>&1

@@ -1,8 +1,21 @@
+<script>
+function setCookie(cname, cvalue, exdays) {
+    var d = new Date();
+    d.setTime(d.getTime() + (exdays*24*60*60*1000));
+    var expires = "expires="+ d.toUTCString();
+    document.cookie = cname + "=" + cvalue + "; " + expires + "; path=/rnode/<%= host %>/<%= port %>; secure";
+}
+setCookie("csrf-token=", "<%= csrftoken %>", 7)
+setCookie("rs-csrf-token=", "<%= csrftoken %>", 7)
+</script>
+
 <form action="/rnode/<%= host %>/<%= port %>/auth-do-sign-in" method="post" target="_blank">
   <input type="hidden" name="username" value="<%= ENV["USER"] %>">
   <input type="hidden" name="password" value="<%= password %>">
   <input type="hidden" name="staySignedIn" value="1">
   <input type="hidden" name="appUri" value="">
+  <input type="hidden" name="csrf-token" value="<%= csrftoken %>">
+  <input type="hidden" name="rs-csrf-token" value="<%= csrftoken %>">
   <button class="btn btn-primary" type="submit">
     <i class="fa fa-registered"></i> Connect to RStudio Server
   </button>
