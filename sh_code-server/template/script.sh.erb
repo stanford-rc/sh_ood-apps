@@ -1,43 +1,25 @@
 #!/usr/bin/env bash
 
-#
-# Load modules
-#
-
-# Purge the module environment to avoid conflicts
+# load modules
 module reset
-
-# Load the git module to remove warning about git version <= 2 (required))
-module load system git
-
-# Load the code-server module (required)
+module load system git # avoid warnings about git version <= 2
 module load code-server
-
 <%- unless context.sh_modules.blank? -%>
-# Load additional modules (optional)
 module load <%= context.sh_modules %>
 <%- end -%>
 
-# Set code-server path
+# create server configuration
 CODE_SERVER_DATAROOT="$HOME/.local/share/code-server"
 CODE_SERVER_USER_DIR="$CODE_SERVER_DATAROOT/User"
 mkdir -p "$CODE_SERVER_DATAROOT/extensions"
 
-# Expose the password to the server
+# expose the password to the server (required)
 export PASSWORD="$password"
 
-# Print compute node
-echo "$(date): Running on compute node ${compute_node}:$port"
+# change workspace
+cd <%= context.sh_workspace.blank? ? "$HOME" : context.sh_workspace %>
 
-# Set working directory to home directory
-cd "${HOME}"
-
-#
-# Start code-server
-#
-echo "$(date): Started code-server"
-echo ""
-
+# start server
 code-server \
     --auth="password" \
     --bind-addr="0.0.0.0:${port}" \
