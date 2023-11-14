@@ -1,4 +1,5 @@
 - sh_modules
+- sh_workspace
 - auto_queues
 - sh_cpus
 - sh_gpus

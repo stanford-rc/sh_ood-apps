@@ -5,6 +5,16 @@ sh_modules:
     Space separated list of additional modules to load</br/> Full list at https://www.sherlock.stanford.edu/docs/software/list
     </small>
 
+sh_workspace:
+  label: Workspace (optional)
+  help: |
+    Optionally select a folder to start the server in (the default is your `$HOME` directory).
+  data-filepicker: true
+  data-target-file-type: dirs
+  data-default-directory: '$HOME'
+  readonly: true
+  value: '$HOME'
+
 auto_queues:
   label: "Partition"
   value: "dev"
