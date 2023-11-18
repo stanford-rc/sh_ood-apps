@@ -19,6 +19,9 @@ export PASSWORD="$password"
 # change workspace
 cd <%= context.sh_workspace.blank? ? "$HOME" : context.sh_workspace %>
 
+# set workspace directory
+WORKSPACE_DIR=<%= context.sh_workspace.blank? ? "$HOME" : context.sh_workspace %>
+
 # start server
 code-server \
     --auth="password" \
@@ -28,4 +31,4 @@ code-server \
     --ignore-last-opened \
     --extensions-dir="$CODE_SERVER_DATAROOT/extensions" \
     --user-data-dir="$CODE_SERVER_DATAROOT" \
-    "${HOME}"
+    "$WORKSPACE_DIR"
