@@ -10,7 +10,7 @@ module load <%= context.sh_modules %>
 
 # create server configuration
 export RSTUDIO_CONFIG_DIR=$PWD      # system config
-export RSTUDIO_CONFIG_HOME=$PWD     # user config
+export RSTUDIO_CONFIG_HOME="$HOME/.config/rstudio"     # user config
 export RSTUDIO_DATA_HOME=$PWD       # per-session storage
 export RSTUDIO_AUTH="$PWD/bin/auth"
 
