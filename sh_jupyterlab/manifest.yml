@@ -1,7 +1,7 @@
 ---
 name: JupyterLab
 category: Interactive Apps
-subcategory: Servers
+subcategory: IDE
 role: batch_connect
 description: |
     This app will launch a [JupyterLab] server on [Sherlock]

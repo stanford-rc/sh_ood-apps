@@ -1,7 +1,7 @@
 ---
 name: MATLAB
 category: Interactive Apps
-subcategory: Servers
+subcategory: Apps
 role: batch_connect
 description: |
   This app will launch a [MATLAB] server using [matlab-proxy] on [Sherlock].

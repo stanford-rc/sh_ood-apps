@@ -1,7 +1,7 @@
 ---
 name: code-server
 category: Interactive Apps
-subcategory: Servers
+subcategory: IDE
 role: batch_connect
 description: |
   This app will launch a [VS Code] server using [code-server] on [Sherlock].
