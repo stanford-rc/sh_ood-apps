@@ -14,3 +14,8 @@ attributes:
 <%- IO.foreach(File.expand_path(File.dirname(__FILE__))+"/../_common/form/attributes.yml") do |line| %>
   <%= line %>
 <%- end -%>
+
+  # no workspace selection for RStudio, it's not supported
+  sh_workspace:
+    hidden: true
+    skip_label: true
