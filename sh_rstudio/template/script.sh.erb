@@ -13,6 +13,8 @@ export RSTUDIO_CONFIG_DIR=$PWD      # system config
 export RSTUDIO_DATA_HOME=$PWD       # per-session storage
 export RSTUDIO_AUTH="$PWD/bin/auth"
 
+_workspace_dir=<%= context.sh_workspace.blank? ? "$HOME" : context.sh_workspace %>
+
 cat <<-EOF > $RSTUDIO_CONFIG_DIR/rserver.conf
 server-user=$USER
 www-port=$port
@@ -32,6 +34,7 @@ session-save-action-default=no
 session-quit-child-processes-on-exit=1
 r-restore-workspace=0
 restrict-directory-view=1
+session-default-working-dir=$_workspace_dir
 EOF
 cat <<-EOF > $RSTUDIO_CONFIG_DIR/logging.conf
 [*]
