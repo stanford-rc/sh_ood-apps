@@ -10,7 +10,6 @@ module load <%= context.sh_modules %>
 
 # create server configuration
 export RSTUDIO_CONFIG_DIR=$PWD      # system config
-export RSTUDIO_CONFIG_HOME="$HOME/.config/rstudio"     # user config
 export RSTUDIO_DATA_HOME=$PWD       # per-session storage
 export RSTUDIO_AUTH="$PWD/bin/auth"
 
@@ -34,20 +33,21 @@ session-timeout-suspend=0
 session-save-action-default=no
 session-quit-child-processes-on-exit=1
 r-restore-workspace=0
+restrict-directory-view=1
 session-default-working-dir=$_workspace_dir
 EOF
 cat <<-EOF > $RSTUDIO_CONFIG_DIR/logging.conf
 [*]
 log-level=info
 logger-type=file
-log-dir=$RSTUDIO_CONFIG_HOME/sessions
+log-dir=$RSTUDIO_CONFIG_DIR/sessions
 EOF
 cat <<-EOF > $RSTUDIO_CONFIG_DIR/database.conf
 provider=sqlite
 directory=$RSTUDIO_CONFIG_DIR
 pool-size=$SLURM_CPUS_ON_NODE
 EOF
-mkdir $RSTUDIO_CONFIG_HOME/sessions
+mkdir $RSTUDIO_CONFIG_DIR/sessions
 
 # start server
 rserver 2>&1

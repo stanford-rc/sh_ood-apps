@@ -1,7 +1,7 @@
 ---
 name: RStudio Server
 category: Interactive Apps
-subcategory: Servers
+subcategory: IDE
 role: batch_connect
 description: |
   This app will launch [RStudio Server] an IDE for [R] on [Sherlock].

@@ -14,7 +14,7 @@ NOTEBOOK_ROOT=<%= context.sh_workspace.blank? ? "$HOME" : context.sh_workspace %
 # so let's make a new workspace dir that's this job's PWD and copy the defult /lab
 # workspace over there so folks can update it.
 WORKSPACE_DIR="$HOME/.jupyter/lab/workspaces"
-FILES=$(ls $WORKSPACE_DIR)
+FILES=$(ls $WORKSPACE_DIR 2>/dev/null)
 
 for FILE in ${FILES[@]}; do
   ID=$(jq -r '.metadata.id' $WORKSPACE_DIR/$FILE)
