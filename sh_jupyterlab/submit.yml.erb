@@ -3,6 +3,7 @@ batch_connect:
 
 script:
   native: [
+            "-N", "1",
             "-c", "<%= sh_cpus.blank?  ? 1 : sh_cpus.to_i %>",
             <%- if not sh_gpus.blank? -%>
                 "-G", "<%= sh_gpus.to_i %>",
