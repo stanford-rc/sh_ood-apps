@@ -49,5 +49,10 @@ sh_mem:
   help: |
     <small>Amount of memory to allocate</small>
 
+sh_features:
+  label: "Additional node features (optional)"
+  help: |
+    <small>Additional node features to request, expressed as <a href="https://slurm.schedmd.com/sbatch.html#OPT_constraint">job contraints</a></small>
+
 bc_num_hours:
   label: "Runtime (in hours)"

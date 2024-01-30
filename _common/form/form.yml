@@ -4,5 +4,6 @@
 - sh_cpus
 - sh_gpus
 - sh_mem
+- sh_features
 - bc_num_hours
 - bc_email_on_started
