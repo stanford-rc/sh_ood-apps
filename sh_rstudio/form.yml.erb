@@ -10,6 +10,7 @@ attributes:
 
   auto_modules_R:
     default: false
+    value: R/4.2.0
 
 <%- IO.foreach(File.expand_path(File.dirname(__FILE__))+"/../_common/form/attributes.yml") do |line| %>
   <%= line %>
