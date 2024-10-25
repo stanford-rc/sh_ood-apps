@@ -56,3 +56,4 @@ sh_features:
 
 bc_num_hours:
   label: "Runtime (in hours)"
+  default: 2
