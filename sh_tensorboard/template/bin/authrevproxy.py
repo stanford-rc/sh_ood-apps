@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/python3
 
 # provides a reverse proxy that only allows requests coming from the same
 # user it's running as
@@ -7,11 +7,14 @@
 # cookie, where:
 #  <session_id> is the OnDemand Session id
 #  <password> is the password defined in the template/before.sh script
+#
+# depends python >= 3.3 and tested with Twisted==24.11.0
 
 from twisted.internet import reactor, endpoints
 from twisted.web import proxy, server
 from twisted.web.resource import Resource
-from twisted.web.error import ForbiddenResource
+from twisted.web.error import Error
+from twisted.web.pages import forbidden
 
 import argparse
 import getpass
@@ -45,7 +48,7 @@ class TokenResource(Resource):
             # - cookie name depends on the ood interactive session id ($PWD)
             ood_session_id = os.path.basename(os.getcwd())
             try:
-                cookie = request.getCookie('_ood_token_' + ood_session_id)
+                cookie = request.getCookie(('_ood_token_' + ood_session_id).encode('utf-8'))
 
             except:
                 cookie = None
@@ -53,8 +56,8 @@ class TokenResource(Resource):
             # get token from environment
             # - $_ood_token_<session_id> is set in template/before.sh script
             try:
-                ood_token = os.environ.get("_ood_token_" +
-                                           ood_session_id.replace("-", "_"))
+                ood_token_key = "_ood_token_" + ood_session_id.replace("-", "_")
+                ood_token = os.environ.get(ood_token_key).encode('utf-8')
             except:
                 ood_token = None
 
@@ -62,11 +65,10 @@ class TokenResource(Resource):
             if cookie == ood_token and cookie != None:
                 return proxy.ReverseProxyResource(self.host,
                                                   self.port,
-                                                  '/' + path)
+                                                  b'/' + path)
 
         # no cheese for you
-        request.setResponseCode(403)
-        return ForbiddenResource()
+        return forbidden()
 
 
 #
@@ -87,7 +89,7 @@ def parse_args(argv=sys.argv[1:]):
 def main(argv=sys.argv[1:]):
     args = parse_args(argv)
     print('authrevproxy is starting on port {} -> {}'.format(args.proxy_port,
-                                                             args.app_port) )
+                                                             args.app_port), flush=True)
     dest = TokenResource('127.0.0.1', args.app_port, '')
     site = server.Site(dest)
 
