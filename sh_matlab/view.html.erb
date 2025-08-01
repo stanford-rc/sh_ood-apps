@@ -3,7 +3,7 @@
   form_id = Digest::SHA1.hexdigest("--" + host.to_s + "--" + port.to_s + "--")
 -%>
 
-<form id="<%= form_id %>" action="/rnode/<%= host %>/<%= port %>/?mwi_auth_token=<%= password %>" method="post" target="_blank">
+<form id="<%= form_id %>" action="/rnode/<%= host %>/<%= port %>/?mwi-auth-token=<%= password %>" method="post" target="_blank">
   <button class="btn btn-primary" type="submit">
     <i class="fa fa-cogs"></i> Connect to MATLAB
   </button>
