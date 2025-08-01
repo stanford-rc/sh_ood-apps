@@ -48,6 +48,7 @@ c.<%= cfg %>App.open_browser = False
 c.<%= cfg %>App.allow_origin = '*'
 c.<%= cfg %>App.notebook_dir = "$NOTEBOOK_ROOT"
 c.<%= cfg %>App.disable_check_xsrf = True
+c.<%= cfg %>App.shutdown_no_activity_timeout = 3600
 c.LabApp.check_for_updates_class = "jupyterlab.NeverCheckForUpdate"
 EOL
 )
