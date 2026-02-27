@@ -8,6 +8,11 @@ module load <%= context.auto_modules_R %>
 module load <%= context.sh_modules %>
 <%- end -%>
 
+# execute custom pre-exec commands
+<%- unless context.sh_preexec.blank? -%>
+<%= context.sh_preexec %>
+<%- end -%>
+
 # create server configuration
 export RSTUDIO_CONFIG_DIR=$PWD      # system config
 export RSTUDIO_DATA_HOME=$PWD       # per-session storage

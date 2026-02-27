@@ -5,6 +5,21 @@ sh_modules:
     Space separated list of additional modules to load</br/> Full list at https://www.sherlock.stanford.edu/docs/software/list
     </small>
 
+sh_modules:
+  label: "Additional modules (optional)"
+  help: |
+    <small>
+    Space separated list of additional modules to load</br/> Full list at https://www.sherlock.stanford.edu/docs/software/list
+    </small>
+
+sh_preexec:
+  widget: "text_area"
+  label: "Custom initialization commands (optional - advanced)"
+  help: |
+    <small>
+    <strong>Advanced</strong> Shell commands to execute before starting the application (to reset modules, add custom module paths, activate virtual environments, source custom scripts, etc.) <strong>Commands are executed as-is in bash. Errors may prevent the application from starting.</strong>
+    </small>
+
 sh_workspace:
   label: Workspace (optional)
   help: |
