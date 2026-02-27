@@ -14,10 +14,10 @@ sh_modules:
 
 sh_preexec:
   widget: "text_area"
-  label: "Custom initialization commands (optional - advanced)"
+  label: "Custom initialization commands (optional)"
   help: |
     <small>
-    <strong>Advanced</strong> Shell commands to execute before starting the application (to reset modules, add custom module paths, activate virtual environments, source custom scripts, etc.) <strong>Commands are executed as-is in bash. Errors may prevent the application from starting.</strong>
+    <strong>⚠️  Advanced</strong> Shell commands to execute before starting the application (to reset modules, add custom module paths, activate virtual environments, source custom scripts, etc.) <strong>Commands are executed as-is in bash. Errors may prevent the application from starting.</strong>
     </small>
 
 sh_workspace:
