@@ -2,7 +2,7 @@
 
 # load modules
 module reset
-module load rstudio/2023
+module load rstudio
 module load <%= context.auto_modules_R %>
 <%- unless context.sh_modules.blank? -%>
 module load <%= context.sh_modules %>
